@@ -4,8 +4,21 @@
 % use_module(estacionamentoService).
 % importar outros modulos não está funcionando
 
-module(menu, []).
-use_module(teste).
+:- module(menu, []).
+:- use_module('vagaService.pl', [
+    vagasDisponiveis/0,
+    vagasDisponiveisAndar/0,
+    adicionaVaga/0,
+    adicionaAndar/0,
+    adicionaTempoVaga/0
+    ]).
+:- use_module('estacionamentoService.pl', [
+    estacionaVeiculo/0,
+    pagaEstacionamento/0,
+    tempoVaga/0
+    ]).
+:- encoding(utf8).
+
 
 
 loop :-
@@ -19,12 +32,12 @@ loop :-
 
 menuCliente :-
     write('--- BEM VINDO! ---'), nl,
-    write('O estacionamento esta funcionando! Escolha o que voce quer fazer: '), nl,
-    write('1 - Estacionar veiculo'), nl,
+    write('O estacionamento está funcionando! Escolha o que você quer fazer: '), nl,
+    write('1 - Estacionar veículo'), nl,
     write('2 - Pagar estacionamento'), nl,
-    write('3 - Ver vagas disponiveis'), nl,
-    write('4 - Ver vagas disponiveis por andar'), nl,
-    write('5 - Ver o tempo que esta na vaga'), nl,
+    write('3 - Ver vagas disponíveis'), nl,
+    write('4 - Ver vagas disponíveis por andar'), nl,
+    write('5 - Ver o tempo que está na vaga'), nl,
     write('6 - Voltar para o menu inicial'),
 
     (Choice = 1 -> estacionaVeiculo;
@@ -37,7 +50,7 @@ menuCliente :-
 
 menuAdministrador :-
     write('--- BEM VINDO! ---'), nl,
-    write('Escolha o que voce quer fazer:'), nl,
+    write('Escolha o que você quer fazer:'), nl,
     write('1 - Adicionar vaga'), nl,
     write('2 - Adicionar andar'), nl,
     write('3 - Adicionar tempo em vaga'), nl,

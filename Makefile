@@ -1,2 +1,2 @@
 run:
-	swipl -s src/menu.pl -g 'loop.'
+	swipl -s src/menu.pl -g 'menu:loop.'
