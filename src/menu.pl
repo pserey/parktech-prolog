@@ -4,7 +4,7 @@
 % use_module(estacionamentoService).
 % importar outros modulos não está funcionando
 
-:- module(menu, []).
+:- module(menu, [menu/0]).
 :- use_module('vagaService.pl', [
     vagasDisponiveis/0,
     vagasDisponiveisAndar/0,
@@ -21,14 +21,17 @@
 
 
 
-loop :-
+menu :-
     write('--- FAÇA LOGIN ---'), nl,
     write('1. Sou cliente'), nl,
     write('2. Sou administrador'), nl,
     write('3. Sair do sistema'), nl,
 
     read(Choice),
-    (Choice = 1 -> menuCliente ; Choice = 2 -> menuAdministrador ; Choice = 3 -> halt ; loop).
+    (Choice = 1 -> menuCliente;
+    Choice = 2 -> menuAdministrador; 
+    Choice = 3 -> halt;
+    menu).
 
 menuCliente :-
     write('--- BEM VINDO! ---'), nl,
@@ -45,7 +48,7 @@ menuCliente :-
     Choice = 3 -> vagasDisponiveis;
     Choice = 4 -> vagasDisponiveisAndar;
     Choice = 5 -> tempoVaga;
-    Choice = 6 -> loop;
+    Choice = 6 -> menu;
     menuCliente).
 
 menuAdministrador :-
@@ -59,5 +62,4 @@ menuAdministrador :-
     (Choice = 1 -> adicionaVaga;
     Choice = 2 -> adicionaAndar;
     Choice = 3 -> adicionaTempoVaga;
-    Choice = 4 -> loop;
-    menuAdministrador).
+    Choice = 4 -> menu).
