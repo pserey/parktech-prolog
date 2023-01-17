@@ -7,8 +7,16 @@
     ]).
 :- use_module('menu.pl', [menu/0]).
 
-vagasDisponiveis :- nl, write('vagasDisponiveis').
-vagasDisponiveisAndar :- nl, write('vagasDisponiveisAndar').
-adicionaVaga :- write('--- adiciona vaga ---').
-adicionaAndar :- nl, write('adicionaAndar').
-adicionaTempoVaga :- nl, write('adicionaTempoVaga').
+vagasDisponiveis :- write('vagasDisponiveis').
+vagasDisponiveisAndar :- write('vagasDisponiveisAndar').
+adicionaVaga :- 
+    write('numero: '),
+    read(Numero),
+    write('andar: '),
+    read(Andar),
+    write('tipo de veiculo: '),
+    read(TipoVeiculo),
+    write(vaga(Numero, Andar, TipoVeiculo)), nl,
+    write('vaga cadastrada!'), nl.
+adicionaAndar :- write('adicionaAndar').
+adicionaTempoVaga :- write('adicionaTempoVaga').
