@@ -4,7 +4,8 @@
     pagaEstacionamento/0,
     tempoVaga/0
     ]).
+:- use_module('menu.pl', [menu/0]).
 
-estacionaVeiculo :- halt.
-pagaEstacionamento :- halt.
-tempoVaga :- halt.
+estacionaVeiculo :- nl, write('estacionaVeiculo').
+pagaEstacionamento :- nl, write('pagaEstacionamento').
+tempoVaga :- nl, write('tempoVaga').
