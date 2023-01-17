@@ -41,8 +41,9 @@ menuCliente :-
     write('3 - Ver vagas disponíveis'), nl,
     write('4 - Ver vagas disponíveis por andar'), nl,
     write('5 - Ver o tempo que está na vaga'), nl,
-    write('6 - Voltar para o menu inicial'),
+    write('6 - Voltar para o menu inicial'), nl,
 
+    read(Choice),
     (Choice = 1 -> estacionaVeiculo;
     Choice = 2 -> pagaEstacionamento;
     Choice = 3 -> vagasDisponiveis;
@@ -57,8 +58,9 @@ menuAdministrador :-
     write('1 - Adicionar vaga'), nl,
     write('2 - Adicionar andar'), nl,
     write('3 - Adicionar tempo em vaga'), nl,
-    write('4 - Voltar para o menu inicial'),
+    write('4 - Voltar para o menu inicial'), nl,
 
+    read(Choice),
     (Choice = 1 -> adicionaVaga;
     Choice = 2 -> adicionaAndar;
     Choice = 3 -> adicionaTempoVaga;
