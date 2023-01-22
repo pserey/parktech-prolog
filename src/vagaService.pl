@@ -18,7 +18,7 @@ vagasDisponiveisAndar :- write('vagasDisponiveisAndar').
 
 % adiciona vaga no banco de dados a partir de interação com o usuário
 adicionaVaga :- 
-    write('--- ADICIONAR VAGA ---'),
+    write('--- ADICIONAR VAGA ---'), nl,
     write('Dê os dados da vaga a ser adicionada:'), nl,
     write('Tipo de veículo: '), input_line(TipoVeiculo),
     write('Andar: '), input_line(AndarString),
@@ -45,8 +45,7 @@ adicionaVaga :-
 proxNumVaga(Andar, NumNovo) :-
     consult('src/vagas.pl'),
     findall(Num, vaga(_,Num,Andar,_,_,_,_), Vagas),
-    max_list(Vagas, Max),
-    NumNovo is Max + 1.
+    (Vagas \= [] -> max_list(Vagas, Max), NumNovo is Max + 1 ; NumNovo is 1).
 
 % posixTime(-Now)
 % retorna posix time do momento em que é chamado em segundos
