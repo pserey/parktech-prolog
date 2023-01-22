@@ -56,12 +56,7 @@ posix_time(Now) :-
 % generate_id_vaga(+NumVaga, +Andar, +TipoVeiculo, -Id)
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
-    number_string(NumVaga, NumVagaString),
-    number_string(Andar, AndarString),
-    string_concat(NumVagaString, '-', IdParte1),
-    string_concat(IdParte1, TipoVeiculo, IdParte2),
-    string_concat(IdParte2, '-', IdParte3),
-    string_concat(IdParte3, AndarString, Id).
+    atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
 
 adiciona_andar :- write('adiciona_andar').
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
