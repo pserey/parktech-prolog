@@ -6,16 +6,16 @@
 
 :- module(menu, [menu/0]).
 :- use_module('vagaService.pl', [
-    vagasDisponiveis/0,
-    vagasDisponiveisAndar/0,
-    adicionaVaga/0,
-    adicionaAndar/0,
-    adicionaTempoVaga/0
+    vagas_disponiveis/0,
+    vagas_disponiveis_andar/0,
+    adiciona_vaga/0,
+    adiciona_andar/0,
+    adiciona_tempo_vaga/0
     ]).
 :- use_module('estacionamentoService.pl', [
-    estacionaVeiculo/0,
-    pagaEstacionamento/0,
-    tempoVaga/0
+    estaciona_veiculo/0,
+    paga_estacionamento/0,
+    tempo_vaga/0
     ]).
 :- use_module('util.pl', [input_line/1]).
 :- encoding(utf8).
@@ -30,12 +30,12 @@ menu :-
 
     input_line(ChoiceString),
     atom_number(ChoiceString, Choice),
-    (Choice = 1 -> menuCliente;
-    Choice = 2 -> menuAdministrador; 
+    (Choice = 1 -> menu_cliente;
+    Choice = 2 -> menu_administrador; 
     Choice = 3 -> halt;
     menu).
 
-menuCliente :-
+menu_cliente :-
     write('--- BEM VINDO! ---'), nl,
     write('O estacionamento está funcionando! Escolha o que você quer fazer: '), nl,
     write('1 - Estacionar veículo'), nl,
@@ -47,15 +47,15 @@ menuCliente :-
 
     input_line(ChoiceString),
     atom_number(ChoiceString, Choice),
-    (Choice = 1 -> estacionaVeiculo;
-    Choice = 2 -> pagaEstacionamento;
-    Choice = 3 -> vagasDisponiveis;
-    Choice = 4 -> vagasDisponiveisAndar;
-    Choice = 5 -> tempoVaga;
+    (Choice = 1 -> estaciona_veiculo;
+    Choice = 2 -> paga_estacionamento;
+    Choice = 3 -> vagas_disponiveis;
+    Choice = 4 -> vagas_disponiveis_andar;
+    Choice = 5 -> tempo_vaga;
     Choice = 6 -> menu;
-    menuCliente).
+    menu_cliente).
 
-menuAdministrador :-
+menu_administrador :-
     write('--- BEM VINDO! ---'), nl,
     write('Escolha o que você quer fazer:'), nl,
     write('1 - Adicionar vaga'), nl,
@@ -65,7 +65,7 @@ menuAdministrador :-
 
     input_line(ChoiceString),
     atom_number(ChoiceString, Choice),
-    (Choice = 1 -> adicionaVaga;
-    Choice = 2 -> adicionaAndar;
-    Choice = 3 -> adicionaTempoVaga;
+    (Choice = 1 -> adiciona_vaga;
+    Choice = 2 -> adiciona_andar;
+    Choice = 3 -> adiciona_tempo_vaga;
     Choice = 4 -> menu).

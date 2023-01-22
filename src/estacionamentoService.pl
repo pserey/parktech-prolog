@@ -1,11 +1,11 @@
 
 :- module(estacionamentoService, [
-    estacionaVeiculo/0,
-    pagaEstacionamento/0,
-    tempoVaga/0
+    estaciona_veiculo/0,
+    paga_estacionamento/0,
+    tempo_vaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
 
-estacionaVeiculo :- nl, write('estacionaVeiculo').
-pagaEstacionamento :- nl, write('pagaEstacionamento').
-tempoVaga :- nl, write('tempoVaga').
+estaciona_veiculo :- nl, write('estaciona_veiculo').
+paga_estacionamento :- nl, write('paga_estacionamento').
+tempo_vaga :- nl, write('tempo_vaga').
