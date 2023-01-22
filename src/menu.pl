@@ -17,6 +17,7 @@
     pagaEstacionamento/0,
     tempoVaga/0
     ]).
+:- use_module('util.pl', [input_line/1]).
 :- encoding(utf8).
 
 
@@ -27,7 +28,8 @@ menu :-
     write('2. Sou administrador'), nl,
     write('3. Sair do sistema'), nl,
 
-    read(Choice),
+    input_line(ChoiceString),
+    atom_number(ChoiceString, Choice),
     (Choice = 1 -> menuCliente;
     Choice = 2 -> menuAdministrador; 
     Choice = 3 -> halt;
@@ -43,7 +45,8 @@ menuCliente :-
     write('5 - Ver o tempo que está na vaga'), nl,
     write('6 - Voltar para o menu inicial'), nl,
 
-    read(Choice),
+    input_line(ChoiceString),
+    atom_number(ChoiceString, Choice),
     (Choice = 1 -> estacionaVeiculo;
     Choice = 2 -> pagaEstacionamento;
     Choice = 3 -> vagasDisponiveis;
@@ -60,7 +63,8 @@ menuAdministrador :-
     write('3 - Adicionar tempo em vaga'), nl,
     write('4 - Voltar para o menu inicial'), nl,
 
-    read(Choice),
+    input_line(ChoiceString),
+    atom_number(ChoiceString, Choice),
     (Choice = 1 -> adicionaVaga;
     Choice = 2 -> adicionaAndar;
     Choice = 3 -> adicionaTempoVaga;

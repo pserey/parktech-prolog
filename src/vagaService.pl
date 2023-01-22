@@ -6,6 +6,7 @@
     adicionaTempoVaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
+:- use_module('util.pl', [input_line/1]).
 :- use_module('databaseManager.pl', [addFact/2]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
@@ -19,10 +20,11 @@ vagasDisponiveisAndar :- write('vagasDisponiveisAndar').
 adicionaVaga :- 
     write('--- ADICIONAR VAGA ---'),
     write('Dê os dados da vaga a ser adicionada:'), nl,
-    write('Tipo de veículo: '), read(TipoVeiculo),
-    write('Andar: '), read(Andar),
+    write('Tipo de veículo: '), input_line(TipoVeiculo),
+    write('Andar: '), input_line(AndarString),
 
     % calcular próximo número de vaga em andar que vaga será adicionada
+    atom_number(AndarString, Andar),
     proxNumVaga(Andar, NumNovo),
 
     % checa se número de vagas no andar não é maior que 20k
