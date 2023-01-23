@@ -6,7 +6,7 @@
     adiciona_tempo_vaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
-:- use_module('util.pl', [input_line/1]).
+:- use_module('util.pl', [input_line/1, posix_time/1]).
 :- use_module('databaseManager.pl', [add_fact/2]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
@@ -47,16 +47,11 @@ prox_num_vaga(Andar, NumNovo) :-
     findall(Num, vaga(_,Num,Andar,_,_,_,_), Vagas),
     (Vagas \= [] -> max_list(Vagas, Max), NumNovo is Max + 1 ; NumNovo is 1).
 
-% posix_time(-Now)
-% retorna posix time do momento em que é chamado em segundos
-posix_time(Now) :- 
-    get_time(NowFloat),
-    Now is round(NowFloat).
-
 % generate_id_vaga(+NumVaga, +Andar, +TipoVeiculo, -Id)
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
     atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
 
 adiciona_andar :- write('adiciona_andar').
+
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
