@@ -69,16 +69,5 @@ prox_num_vaga(Andar, NumNovo) :-
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
     atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
-
-% adiciona um anadar ao estacionamento buscando o numero do ultimo andar criado. Ao cria-lo, cria mais 10 vagas, divididas entre carro, moto e van.
-adiciona_andar :-
-    consult('src/vagas.pl'),
-    findall(Andar, vaga(_, _, Andar, _, _, _, _), Andares),
-    (Andares \= [] -> max_list(Andares, Max), NewAndar is Max + 1; NewAndar is 1),
-    write('Andar adicionado com sucesso: '), write(NewAndar), nl,
-    adiciona_vaga_andar(NewAndar, 4, carro),
-    adiciona_vaga_andar(NewAndar, 4, moto),
-    adiciona_vaga_andar(NewAndar, 2, van),
-    menu.
     
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
