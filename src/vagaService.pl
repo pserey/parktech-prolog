@@ -12,7 +12,13 @@
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
 
-vagas_disponiveis :- write('vagas_disponiveis').
+% verifica a quantidade de vagas total no banco de dados a partir de interação com o usuário
+vagas_disponiveis :-
+    consult('src/vagas.pl'),
+    findall(Status, vaga(Status, _, _, _, _, _, _), Statuses),
+    count(0, Statuses, Available),
+    write('Total de vagas disponíveis: '),
+    write(Available), nl, menu.
 
 % verifica a quantidade de vagas por andar no banco de dados a partir de interação com o usuário
 vagas_disponiveis_andar :-
