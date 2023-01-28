@@ -14,7 +14,25 @@
 
 vagas_disponiveis :- write('vagas_disponiveis').
 
-vagas_disponiveis_andar :- write('vagas_disponiveis_andar').
+% verifica a quantidade de vagas por andar no banco de dados a partir de interação com o usuário
+vagas_disponiveis_andar :-
+    write('Informe o andar: '),
+    input_line(AndarString),
+    atom_number(AndarString, Andar),
+    consult('src/vagas.pl'),
+    findall(Status, vaga(Status, _, Andar, _, _, _, _), Statuses),
+    count(0, Statuses, Available),
+    write('Total de vagas disponíveis no andar '), write(Andar), write(': '),
+    write(Available), nl, menu.
+
+count(_, [], 0).
+
+count(Value, [Value|Tail], Count) :-
+    !, count(Value, Tail, TailCount),
+    Count is TailCount + 1.
+
+count(Value, [_|Tail], Count) :-
+    count(Value, Tail, Count).
 
 % adiciona vaga no banco de dados a partir de interação com o usuário
 adiciona_vaga :- 
