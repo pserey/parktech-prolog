@@ -80,5 +80,19 @@ adiciona_andar :-
     adiciona_vaga_andar(NewAndar, 4, moto),
     adiciona_vaga_andar(NewAndar, 2, van),
     menu.
+    
+% funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
+adiciona_vaga_andar(_, 0, _).
+adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
+    % calcular próximo número de vaga em andar que vaga será adicionada
+    prox_num_vaga(Andar, NumNovo),
+    % acessa posix time atual
+    posix_time(Now),
+    % gera id da vaga nova
+    generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
+    % adiciona fato no banco de dados
+    add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    NewCount is Count - 1,
+    adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
 
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
