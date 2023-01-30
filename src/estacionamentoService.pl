@@ -17,16 +17,28 @@ retorna_horas(TEMPO_VAGA, Horas) :-
     Horas is RETORNO / 3600.
 
 taxa_pagamento(IdVaga, ISDiaSemana, Taxa) :-
-    vaga(IdVaga, NumNovo, Andar, TipoVeiculo, Now, IdVaga,_),
+    consult('src/vagas.pl'),
+    vaga(_, Num, Andar, TipoVeiculo, TempoInicial, _,_),
     posix_time(Current),
-    horas(Current, Now, Diferenca),
+    horas(Current, TempoInicial, Diferenca),
     retorna_horas(Diferenca, Horas),
     (TipoVeiculo == 'carro' -> Horas > 2 -> ISDiaSemana -> Taxa is (6 + (((Horas) -2) * 1.5)) ; Taxa is (8 + (((Horas) -2) * 2))),
     (TipoVeiculo == 'carro' -> Horas < 2 -> ISDiaSemana -> Taxa is 6 ; Taxa is 8),
     (TipoVeiculo == 'moto' -> Horas > 2 -> ISDiaSemana -> Taxa is (4 + (((Horas) -2))) ; Taxa is (6 + (((Horas) -2) * 1.5))),
     (TipoVeiculo == 'moto' -> Horas < 2 -> ISDiaSemana -> Taxa is 4 ; Taxa is 6),
     (TipoVeiculo == 'van' -> Horas > 2 -> ISDiaSemana -> Taxa is (8 + (((Horas) -2) * 2)) ; Taxa is (10 + (((Horas) -2) * 2.5))),
-    (TipoVeiculo == 'van' -> Horas < 2 -> ISDiaSemana -> Taxa is 8 ; Taxa is 10),
+    (TipoVeiculo == 'van' -> Horas < 2 -> ISDiaSemana -> Taxa is 8 ; Taxa is 10).
 
-paga_estacionamento :- nl, write('paga_estacionamento').
+paga_estacionamento :-
+    write('--- PAGAMENTO ---'),nl,
+    write('Informe o numero do andar:'), input_line(AndarString),
+    write('Informe o numero da vaga:'), input_line(VagaString),
+    atom_number(AndarString, Andar),
+    atom_number(VagaString, Vaga),
+    vaga(Status, Vaga, Andar,_,_,IdVaga,_),
+    write('É dia comercial?[S/N]'),
+    input_line(WeekString),
+    taxa_pagamento(IdVaga, WeekString, taxa),
+    (Status == false -> write('A vaga nao esta ocupada, falha ao realizar o pagamento')).
+
 tempo_vaga :- nl, write('tempo_vaga').
