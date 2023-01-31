@@ -11,10 +11,12 @@ add_fact(Arquivo, Fact) :-
     format(Stream, '~w.~n', [Fact]),
     close(Stream).
 
-update_fact(Arquivo, OldFact, NewFact) :-
+update_fact(Arquivo, NewTempo) :-
     consult(Arquivo),
-    retract(OldFact), 
-    asserta(NewFact),
-    tell(Arquivo), 
+    vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
+    NewTempo is NovoTempo+Tempo,
+    retract(vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa)), 
+    asserta(vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
+    tell(Arquivo),
     listing(vaga/7), 
     told.
