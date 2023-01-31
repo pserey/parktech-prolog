@@ -63,7 +63,7 @@ adiciona_tempo_vaga :-
    atom_number(AndarString, Andar),
    write('Novo tempo: '), input_line(TempoString),
    atom_number(TempoString, NovoTempo),
-   consult('src/vagas.pl'),
+   consult('src/vagas1.pl'),
    vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
    NewTempo is NovoTempo+Tempo,
    update_fact('src/vagas.pl', vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),

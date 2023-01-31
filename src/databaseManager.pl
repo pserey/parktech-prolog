@@ -1,6 +1,8 @@
 :- module(databaseManager, [
     add_fact/2, update_fact/3]).
 
+:- dynamic vaga/7.
+
 % add_fact(+Arquivo, +Fact)
 % adiciona fato passado como parametro a arquivo
 % Arquivo deve ser string com path para arquivo (a partir do PWD)
