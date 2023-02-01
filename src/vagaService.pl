@@ -12,7 +12,13 @@
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
 
-vagas_disponiveis :- write('vagas_disponiveis').
+% verifica a quantidade de vagas total no banco de dados a partir de interação com o usuário
+vagas_disponiveis :-
+    consult('src/vagas.pl'),
+    findall(Status, vaga(Status, _, _, _, _, _, _), Statuses),
+    count(0, Statuses, Available),
+    write('Total de vagas disponíveis: '),
+    write(Available), nl, menu.
 
 % verifica a quantidade de vagas por andar no banco de dados a partir de interação com o usuário
 vagas_disponiveis_andar :-
@@ -69,5 +75,30 @@ prox_num_vaga(Andar, NumNovo) :-
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
     atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
+
+% adiciona um andar ao estacionamento buscando o numero do ultimo andar criado. Ao cria-lo, cria mais 10 vagas, divididas entre carro, moto e van.
+adiciona_andar :-
+    consult('src/vagas.pl'),
+    findall(Andar, vaga(_, _, Andar, _, _, _, _), Andares),
+    (Andares \= [] -> max_list(Andares, Max), NewAndar is Max + 1; NewAndar is 1),
+    write('Andar adicionado com sucesso: '), write(NewAndar), nl,
+    adiciona_vaga_andar(NewAndar, 4, carro),
+    adiciona_vaga_andar(NewAndar, 4, moto),
+    adiciona_vaga_andar(NewAndar, 2, van),
+    menu.
+    
+% funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
+adiciona_vaga_andar(_, 0, _).
+adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
+    % calcular próximo número de vaga em andar que vaga será adicionada
+    prox_num_vaga(Andar, NumNovo),
+    % acessa posix time atual
+    posix_time(Now),
+    % gera id da vaga nova
+    generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
+    % adiciona fato no banco de dados
+    add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    NewCount is Count - 1,
+    adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
     
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
