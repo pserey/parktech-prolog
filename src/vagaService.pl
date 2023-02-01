@@ -67,6 +67,11 @@ adiciona_tempo_vaga :-
    vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
    NewTempo is NovoTempo+Tempo,
    retract(vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa)),
-   asserta(vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
+   telling(Stream),
+   tell('src/vagas.pl'),
+   listing(vaga),
+   told,
+   telling(OldStream),
+   add_fact('src/vagas.pl',vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
    write('Tempo adicionado com sucesso'), nl,menu.
 

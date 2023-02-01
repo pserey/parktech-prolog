@@ -8,6 +8,8 @@
 :- use_module('util.pl', [input_line/1, posix_time/1]).
 
 estaciona_veiculo :- nl, write('estaciona_veiculo').
+
+
 horas(FINAL, INICIAL, HORAS) :-
     round(FINAL, DATE1),
     round(INICIAL, DATE2),
@@ -23,12 +25,10 @@ taxa_pagamento(IdVaga, IsDiaSemana, Taxa) :-
     posix_time(Current),
     horas(Current, TempoInicial, Diferenca),
     retorna_horas(Diferenca, Horas),
-    (TipoVeiculo == 'carro' -> Horas > 2 -> IsDiaSemana == 1-> Taxa is (6 + (((Horas) -2) * 1.5)) ; Taxa is (8 + (((Horas) -2) * 2))),
-    (TipoVeiculo == 'carro' -> Horas < 2 -> IsDiaSemana == 1 -> Taxa is 6 ; Taxa is 8),
-    (TipoVeiculo == 'moto' -> Horas > 2 -> IsDiaSemana == 1 -> Taxa is (4 + (((Horas) -2))) ; Taxa is (6 + (((Horas) -2) * 1.5))),
-    (TipoVeiculo == 'moto' -> Horas < 2 -> IsDiaSemana == 1-> Taxa is 4 ; Taxa is 6),
-    (TipoVeiculo == 'van' -> Horas > 2 -> IsDiaSemana == 1-> Taxa is (8 + (((Horas) -2) * 2)) ; Taxa is (10 + (((Horas) -2) * 2.5))),
-    (TipoVeiculo == 'van' -> Horas < 2 -> IsDiaSemana == 1 -> Taxa is 8 ; Taxa is 10).
+    (TipoVeiculo == 'carro', Horas > 2, iSDiaSemana == '1' -> Taxa is 6 + ((Horas-2)*1.5) ;
+    TipoVeiculo == 'carro', Horas > 2, iSDiaSemana == '0' -> Taxa is 8 + ((Horas-2)*2) ;
+    TipoVeiculo == 'carro', Horas =< 2, iSDiaSemana == '1' -> Taxa is 6 ;
+    TipoVeiculo == 'carro', Horas =< 2, iSDiaSemana == '0' -> Taxa is 8).
 
 paga_estacionamento :-
     write('--- PAGAMENTO ---'),nl,
@@ -38,9 +38,24 @@ paga_estacionamento :-
     atom_number(VagaString, Vaga),
     consult('src/vagas.pl'),
     vaga(Status, Vaga, Andar,_,_,IdVaga,_),
-    write('É dia comercial?[0/1] '), input_line(WeekString),
-    atom_number(WeekString, IsDiaSemana),
-    taxa_pagamento(IdVaga, IsDiaSemana, Taxa),
-    (Status == 0 -> write('A vaga nao esta ocupada, falha ao realizar o pagamento')).
+    write('é Dia comercial? [0/1] '), input_line(WeekString),
+    taxa_pagamento(IdVaga, WeekString, Taxa),
+    (Status == 0 -> write('A vaga nao está ocupada, falha ao realizar o pagamento'),nl,menu;true),
+    string_concatenation('O preço final é ', Taxa, Resultado),
+    write(Resultado), nl,
+    write('Faça o seu pagamento '), input_line(Valor),
+    atom_number(Valor, ValorPago),
+    Troco is ValorPago - Taxa,
+    string_concatenation('Estacionamento não foi pago. O valor da taxa ', Taxa, Intermed),
+    atom_concat(Intermed, ' é maior que o valor pago', Menor),
+    string_concatenation('Seu troco é ', Troco, Maior),
+    (Troco < 0 -> write(Menor), nl, menu;
+    Troco == 0 -> write('Estacionamento Pago com sucesso'),nl,menu;
+    Troco > 0 ->  write(Maior), nl, menu).
+
+string_concatenation(String, Int, Result) :-
+    number_string(Int, IntString),
+    atom_concat(String, IntString, Result).
+
 
 tempo_vaga :- nl, write('tempo_vaga').
