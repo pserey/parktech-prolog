@@ -7,7 +7,7 @@
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
+:- use_module('databaseManager.pl', [add_fact/2]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
@@ -63,6 +63,10 @@ adiciona_tempo_vaga :-
    atom_number(AndarString, Andar),
    write('Novo tempo: '), input_line(TempoString),
    atom_number(TempoString, NovoTempo),
-   update_fact('src/vagas.pl', NovoTempo),
+   consult('src/vagas.pl'),
+   vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
+   NewTempo is NovoTempo+Tempo,
+   retract(vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa)),
+   asserta(vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
    write('Tempo adicionado com sucesso'), nl,menu.
 

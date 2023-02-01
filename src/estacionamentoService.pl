@@ -38,7 +38,7 @@ paga_estacionamento :-
     atom_number(VagaString, Vaga),
     consult('src/vagas.pl'),
     vaga(Status, Vaga, Andar,_,_,IdVaga,_),
-    write('É dia comercial?[S/N] '), input_line(WeekString),
+    write('É dia comercial?[0/1] '), input_line(WeekString),
     atom_number(WeekString, IsDiaSemana),
     taxa_pagamento(IdVaga, IsDiaSemana, Taxa),
     (Status == 0 -> write('A vaga nao esta ocupada, falha ao realizar o pagamento')).
