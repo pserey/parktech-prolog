@@ -6,7 +6,8 @@
     adiciona_tempo_vaga/0,
     find_vaga_by_id/2,
     disponiibilidade_vaga/2,
-    get_vaga_id/3
+    get_vaga_id/3,
+    get_vaga_tipo/2
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
@@ -127,4 +128,8 @@ disponiibilidade_vaga(Vaga, Andar) :-
 
 get_vaga_id(Vaga, Andar, ID) :-
     consult('src/vagas.pl'),
-    vaga(0, Vaga, Andar, _, _, ID, _), !.
+    vaga(_, Vaga, Andar, _, _, ID, _), !.
+
+get_vaga_tipo(ID, Tipo) :-
+    consult('src/vagas.pl'),
+    vaga(_, _, _, Tipo, _, ID, _), !.
