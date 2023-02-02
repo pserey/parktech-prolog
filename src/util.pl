@@ -1,4 +1,5 @@
-:- module(util, [input_line/1, posix_time/1, remove_last/2]).
+:- module(util, [input_line/1, posix_time/1, remove_last/2, most_repeated_element/2]).
+:- use_module(library(aggregate)).
 
 % input_line(-Line)
 % lê linha de input e retorna string
@@ -16,3 +17,9 @@ posix_time(Now) :-
 remove_last([_], []).
 remove_last([X|Xs], [X|WithoutLast]) :- 
     remove_last(Xs, WithoutLast).
+
+% retorna elemento que mais se repete em uma lista
+most_repeated_element(List, MostRepeated) :-
+    setof(Count-Element, (member(Element,List), aggregate(count, member(Element,List), Count)), Counts),
+    sort(Counts, SortedCounts),
+    reverse(SortedCounts, [MostRepeatedCount-MostRepeated|_]).

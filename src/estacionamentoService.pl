@@ -4,7 +4,7 @@
     tempo_vaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
-:- use_module('util.pl', [input_line/1, posix_time/1]).
+:- use_module('util.pl', [input_line/1, posix_time/1, most_repeated_element/2]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
 :- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1, get_historico/2]).
@@ -32,7 +32,7 @@ verificaDisponibilidadeVaga(CpfCliente, Placa) :-
     write('--- VAGA RECOMENDADA ---'), nl,
 
 
-    (recomenda_vaga(CpfCliente, Placa, VagaRec, AndarRec) -> write('A vaga recomendada para você é a vaga de número '), write(VagaRec), write(' no '), write(AndarRec), write('o andar ') ;
+    (recomenda_vaga(CpfCliente, VagaRec, AndarRec) -> write('A vaga recomendada para você é a vaga de número '), write(VagaRec), write(' no '), write(AndarRec), write('o andar ') ;
     write('Por enquanto não há vagas recomendadas para esse veículo')), nl,
 
     write('------------------------'), nl,
@@ -49,9 +49,10 @@ verificaDisponibilidadeVaga(CpfCliente, Placa) :-
     (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), menu ; write('Você não pode estacionar nessa vaga, ela está ocupada.'), nl, find_vagas(Tipo, CpfCliente, Placa)).
 
 
-recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
-    VagaRec = "NumVagaRecomendada",
-    AndarRec = "NumAndarRecomendado".
+recomenda_vaga(CPF, VagaRec, AndarRec) :-
+    get_historico(CPF, Historico),
+    most_repeated_element(Historico, IdVagaRec),
+    get_vaga_numero_andar(IdVagaRec, VagaRec, AndarRec).
 
 
 find_vagas(Tipo, CpfCliente, Placa) :-
