@@ -7,7 +7,7 @@
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2]).
+:- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
@@ -76,6 +76,22 @@ prox_num_vaga(Andar, NumNovo) :-
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
     atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
 
+
+adiciona_tempo_vaga :-
+   write('--- FUNÇÃO PARA MODIFICAR O TEMPO DE UM VAGA PARA TESTES ---'),nl,
+   write('Insira os dados da modificação'),nl,
+   write('Número da vaga: '), input_line(VagaString),
+   atom_number(VagaString, Vaga),
+   write('Numero do andar: '), input_line(AndarString),
+   atom_number(AndarString, Andar),
+   write('Novo tempo: '), input_line(TempoString),
+   atom_number(TempoString, NovoTempo),
+   consult('src/vagas.pl'),
+   vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
+   NewTempo is NovoTempo+Tempo,
+   update_fact('src/vagas.pl', vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
+   write('Tempo adicionado com sucesso'), nl,menu.
+
 % adiciona um andar ao estacionamento buscando o numero do ultimo andar criado. Ao cria-lo, cria mais 10 vagas, divididas entre carro, moto e van.
 adiciona_andar :-
     consult('src/vagas.pl'),
@@ -100,5 +116,4 @@ adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
     add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
     NewCount is Count - 1,
     adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
-    
-adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
+
