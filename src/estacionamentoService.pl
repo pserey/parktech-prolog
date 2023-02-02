@@ -18,30 +18,38 @@
 
 estaciona_veiculo :- 
     write('--- ESTACIONAR ---'), nl,
-    write('Insira seu CPF: '), input_line(CpfClienteString), atom_number(CpfClienteString, CpfCliente),
+    write('Insira seu CPF: '), input_line(CpfClienteString), nl, atom_number(CpfClienteString, CpfCliente),
     (verifica_cliente(CpfCliente) ->  verificaVeiculo(CpfCliente) ; cadastra_cliente(CpfCliente), verificaVeiculo(CpfCliente)).
 
 
 verificaVeiculo(CpfCliente) :- 
-    write('Insira a placa do veículo: '), input_line(Placa),
+    write('Insira a placa do veículo: '), input_line(PlacaString), nl,
+    atom_string(Placa, PlacaString),
     (verifica_veiculo(Placa) ->  verificaDisponibilidadeVaga(CpfCliente, Placa) ; cadastra_veiculo(Placa), verificaDisponibilidadeVaga(CpfCliente, Placa)).
+    % (verifica_veiculo(Placa) ->  write('veiculo verificado'); write('veiculo nao verificado')).
 
 
 verificaDisponibilidadeVaga(CpfCliente, Placa) :-
-    write('--- VAGA RECOMENDADA ---'),
-    % historico(cpfCliente, V),
-    write('RECOMENDA VAGA AQUI'),
-    
-    write('se tiver vaga recomendada: A vaga recomendada para você é a vaga de número +++++ no andar +++++'),
-    write('caso não tenha: não há vagas recomendadas para esse veículo'),
+    write('--- VAGA RECOMENDADA ---'), nl,
 
-    write('Insira o andar que você deseja estacionar: '), input_line(Andar),
-    write('Insira a vaga que você deseja estacionar: '), input_line(Vaga),
+
+    (recomenda_vaga(CpfCliente, Placa, VagaRec, AndarRec) -> write('A vaga recomendada para você é a vaga de número '), write(VagaRec), write(' no '), write(AndarRec), write('o andar ') ;
+    write('Por enquanto não há vagas recomendadas para esse veículo')), nl,
+
+    write('------------------------'), nl,
+
+    write('Insira o andar que você deseja estacionar: '), input_line(AndarString), atom_number(AndarString, Andar), nl,
+    write('Insira a vaga que você deseja estacionar: '), input_line(VagaString), atom_number(VagaString, Vaga), nl,
 
     % pega id de vaga
     get_vaga_id(Vaga, Andar, ID),
     
-    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID) ; (write('Você não pode estacionar nessa vaga'), find_vagas(T, CpfCliente, Placa))).
+    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), write('Veiculo estacionado com sucesso!'), nl, menu ; write('Você não pode estacionar nessa vaga'), find_vagas(T, CpfCliente, Placa)).
+
+
+recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
+    VagaRec = "NumVagaRecomendada",
+    AndarRec = "NumAndarRecomendado".
 
 
 find_vagas(Tipo, CpfCliente, Placa) :-
@@ -79,8 +87,9 @@ estaciona(CpfCliente, Placa, IdVaga) :-
     % atualiza vaga
     Vaga =.. List,
     List = [vaga, _, _, _, _, _, IdVaga, _],
-    replace(none, Placa, List, NewList),
-    NewVaga =.. NewList,
+    replace(none, Placa, List, PlacaList),
+    replace(0, 1, PlacaList, EstacionadaList),
+    NewVaga =.. EstacionadaList,
     
     % persiste atualização
     update_fact('src/vagas.pl', Vaga, NewVaga), !.
