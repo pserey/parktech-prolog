@@ -13,6 +13,7 @@
 :- dynamic cliente/2.
 :- dynamic veiculo/3.
 :- dynamic historico/2.
+:- dynamic vaga/7.
 
 estaciona_veiculo :- 
     write('--- ESTACIONAR ---'), nl,
@@ -25,7 +26,7 @@ verificaVeiculo(CpfCliente) :-
     (veiculo(_,placa,_) ->  verficaDiponibilidadeVaga(cpfCliente, placa) ; cadastra_veiculo(placa), verficaDiponibilidadeVaga(cpfCliente, placa)).
 
 
-verficaDiponibilidadeVaga(cpfCliente, placa) :-
+verificaDisponibilidadeVaga(cpfCliente, placa) :-
     write('--- VAGA RECOMENDADA ---'),
     historico(cpfCliente, V),
     write('RECOMENDA VAGA AQUI').
@@ -37,23 +38,27 @@ verficaDiponibilidadeVaga(cpfCliente, placa) :-
     write('Insira a vaga que você deseja estacionar: '), input_line(vaga).
     
     veiculo(T, placa, _).
-    (vaga(0,vaga,andar,T,_,ID,_) -> (estaciona(cpfCliente, ID), write('Veículo estacionfind_vagas')),()).      
+    (vaga(0,vaga,andar,T,_,ID,_) -> estaciona(cpfCliente, placa, ID), (write('Você não pode estacionar nessa vaga'), find_vagas(T, cpfCliente, placa))).       
 
 
-find_vagas(Tipo) :-
+find_vagas(Tipo, cpfCliente, placa) :-
     findall(X,(vaga(0,_,_,T,_,X,_)),L), 
     nth0(1,L,R), 
+    (R =:= [] -> write('Não há vagas disponíveis para esse veículo.');
     pega_primeiro_ultimo(R, P, U),
     write('A vaga escolhida não esta disponivel, mas voce pode estacionar o veiculo na vaga numero '),
     write(P),
     write('no andar'),
-    write(U).
-
+    write(U),
+    write('Deseja estacionar nessa vaga? (S/N)'), input_line(resposta),
+    (resposta =:= 'S' -> estaciona(cpfCliente, placa, R); verificaDisponibilidadeVaga(cpfCliente,placa))).
 
 pega_primeiro_ultimo(S, P, U) :-
     atom_chars(S, Lista),
     [P | _] = Lista,
     reverse(Lista, [U | _]).
+
+estaciona(cpfCliente, placa, idVaga):- !.
 
 
 paga_estacionamento :- nl, write('paga_estacionamento').
