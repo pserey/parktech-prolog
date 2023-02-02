@@ -4,7 +4,9 @@
     adiciona_vaga/0,
     adiciona_andar/0,
     adiciona_tempo_vaga/0,
-    find_vaga_by_id/2
+    find_vaga_by_id/2,
+    disponiibilidade_vaga/2,
+    get_vaga_id/3
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
@@ -52,7 +54,7 @@ adiciona_vaga :-
     atom_number(AndarString, Andar),
     prox_num_vaga(Andar, NumNovo),
 
-    % checa se número de vagas no andar não é maior que 20k
+    % checa se número de vagas no andar não é maior que 20
     (NumNovo > 20 -> write('Número máximo de vagas no andar atingido!'), nl, menu ; true),
 
     % acessa posix time atual
@@ -62,7 +64,7 @@ adiciona_vaga :-
     generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
 
     % adiciona fato no banco de dados
-    add_fact('src/vagas.pl', vaga(0, NumNovo, Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    add_fact('src/vagas.pl', vaga(0, NumNovo, Andar, TipoVeiculo, Now, IdVaga, "none")),
     write('Vaga adicionada com sucesso!'), nl, menu.
 
 % prox_num_vaga(+Andar, -NumNovo)
@@ -75,7 +77,8 @@ prox_num_vaga(Andar, NumNovo) :-
 % generate_id_vaga(+NumVaga, +Andar, +TipoVeiculo, -Id)
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
-    atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
+    atomic_list_concat([NumVaga, TipoVeiculo, Andar], '-', IdAtom),
+    atom_string(IdAtom, Id).
 
 % adiciona um andar ao estacionamento buscando o numero do ultimo andar criado. Ao cria-lo, cria mais 10 vagas, divididas entre carro, moto e van.
 adiciona_andar :-
@@ -117,3 +120,11 @@ find_vaga_by_id_list(List, ID, Vaga) :-
     member(Vaga, List),
     Vaga =.. [_,_,_,_,_,_,ID1,_],
     ID1 = ID.
+
+disponiibilidade_vaga(Vaga, Andar) :-
+    consult('src/vagas.pl'),
+    vaga(0, Vaga, Andar, _, _, _, _), !.
+
+get_vaga_id(Vaga, Andar, ID) :-
+    consult('src/vagas.pl'),
+    vaga(0, Vaga, Andar, _, _, ID, _), !.
