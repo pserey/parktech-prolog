@@ -1,6 +1,11 @@
 :- module(estacionamentoService, [
     estaciona_veiculo/0,
+    verificaVeiculo/1,
+    verficaDisponibilidadeVaga/2,
     paga_estacionamento/0,
+    find_vagas/3,
+    pega_primeiro_ultimo/3,
+    estaciona/3,
     tempo_vaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
@@ -18,19 +23,19 @@
 estaciona_veiculo :- 
     write('--- ESTACIONAR ---'), nl,
     write('Insira seu CPF: '), input_line(cpfCliente),
-    (cliente(CPF, _) ->  verificaVeiculo(cpfCliente) ; cadastra_cliente(cpfCliente), verificaVeiculo(cpfCliente)).
+    (cliente(cpfCliente, _)  ->  verificaVeiculo(cpfCliente) ; cadastra_cliente(cpfCliente), verificaVeiculo(cpfCliente)).
 
 
 verificaVeiculo(CpfCliente) :- 
     write('Insira a placa do veículo: '), input_line(placa),
-    (veiculo(_,placa,_) ->  verficaDiponibilidadeVaga(cpfCliente, placa) ; cadastra_veiculo(placa), verficaDiponibilidadeVaga(cpfCliente, placa)).
+    (veiculo(_,placa,_) ->  verficaDisponibilidadeVaga(cpfCliente, placa) ; cadastra_veiculo(placa), verficaDisponibilidadeVaga(cpfCliente, placa)).
 
 
-verificaDisponibilidadeVaga(cpfCliente, placa) :-
+verficaDisponibilidadeVaga(cpfCliente, placa) :-
     write('--- VAGA RECOMENDADA ---'),
     historico(cpfCliente, V),
+
     write('RECOMENDA VAGA AQUI').
-    
     write('se tiver vaga recomendada: A vaga recomendada para você é a vaga de número +++++ no andar +++++').
     write('caso não tenha: não há vagas recomendadas para esse veículo').
 
@@ -38,7 +43,7 @@ verificaDisponibilidadeVaga(cpfCliente, placa) :-
     write('Insira a vaga que você deseja estacionar: '), input_line(vaga).
     
     veiculo(T, placa, _).
-    (vaga(0,vaga,andar,T,_,ID,_) -> estaciona(cpfCliente, placa, ID), (write('Você não pode estacionar nessa vaga'), find_vagas(T, cpfCliente, placa))).       
+    (vaga(0,vaga,andar,T,_,ID,_) -> estaciona(cpfCliente, placa, ID); (write('Você não pode estacionar nessa vaga'), find_vagas(T, cpfCliente, placa))).       
 
 
 find_vagas(Tipo, cpfCliente, placa) :-
@@ -51,14 +56,14 @@ find_vagas(Tipo, cpfCliente, placa) :-
     write('no andar'),
     write(U),
     write('Deseja estacionar nessa vaga? (S/N)'), input_line(resposta),
-    (resposta =:= 'S' -> estaciona(cpfCliente, placa, R); verificaDisponibilidadeVaga(cpfCliente,placa))).
+    (resposta =:= 'S' -> estaciona(cpfCliente, placa, R); verficaDisponibilidadeVaga(cpfCliente,placa))).
 
 pega_primeiro_ultimo(S, P, U) :-
     atom_chars(S, Lista),
     [P | _] = Lista,
     reverse(Lista, [U | _]).
 
-estaciona(cpfCliente, placa, idVaga):- !.
+estaciona(cpfCliente, placa, idVaga):- write('deu certo!!!').
 
 
 paga_estacionamento :- nl, write('paga_estacionamento').
