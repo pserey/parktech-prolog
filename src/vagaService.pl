@@ -7,7 +7,9 @@
     find_vaga_by_id/2,
     disponiibilidade_vaga/2,
     get_vaga_id/3,
-    get_vaga_tipo/2
+    get_vaga_tipo/2,
+    get_vagas_disponiveis_tipo/2,
+    get_vaga_numero_andar/3
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
@@ -133,3 +135,11 @@ get_vaga_id(Vaga, Andar, ID) :-
 get_vaga_tipo(ID, Tipo) :-
     consult('src/vagas.pl'),
     vaga(_, _, _, Tipo, _, ID, _), !.
+
+get_vaga_numero_andar(ID, Vaga, Andar) :-
+    consult('src/vagas.pl'),
+    vaga(_, Vaga, Andar, _, _, ID, _), !.
+
+get_vagas_disponiveis_tipo(Tipo, Disponiveis) :-
+    consult('src/vagas.pl'),
+    findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis).
