@@ -1,5 +1,5 @@
-cliente(11122233344,'Lorenna').
-cliente(12312312333,'Pedro').
-cliente(11111122222,'Vandressa').
-cliente(12312312312,'Wendell').
-cliente(11122211122,'Joao Henrique').
+cliente(11111111111,'Lorenna').
+cliente(22222222222,'Pedro').
+cliente(33333333333,'Vandressa').
+cliente(44444444444,'Wendell').
+cliente(55555555555,'Joao Henrique').

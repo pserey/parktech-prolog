@@ -5,4 +5,4 @@ veiculo('moto', '1111mmmm', 'branco').
 veiculo('moto', '2222mmmm', 'preto').
 veiculo('moto', '3333mmmm', 'azul').
 veiculo('van', '1111vvvv', 'branco').
-veiculo('van', '1111vvvv', 'verde').
+veiculo('van', '2222vvvv', 'verde').
