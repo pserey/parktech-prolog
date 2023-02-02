@@ -16,6 +16,5 @@ cadastra_veiculo(placa) :-
 
 verifica_veiculo(Placa) :-
     consult('src/veiculos.pl'),
-    veiculo(_, PlacaCompound, _),
-    with_output_to(atom(Placa), write(PlacaCompound)).
+    veiculo(_, Placa, _).
     % file_to_facts('src/clientes.pl', Clientes),
