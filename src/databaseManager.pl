@@ -55,7 +55,6 @@ file_to_facts(File, Facts) :-
     remove_last(FileFacts, Facts),
     close(Stream), !.
 
-
 % write_file(+Stream, +Facts)
 % escreve os fatos no arquivo adicionando um ponto e uma nova linha no fim
 write_file(_, []).
@@ -65,17 +64,3 @@ write_file(Stream, [Fact|Facts]) :-
     write(Stream, '.'),
     nl(Stream),
     write_file(Stream, Facts).
-
-% lê linhas de arquivo e retorna lista de strings
-% read_file_lines(File, Lines) :-
-%     open(File, read, Stream),
-%     read_lines(Stream, Lines),
-%     close(Stream).
-
-% read_lines(Stream, []) :-
-%     at_end_of_stream(Stream).
-% read_lines(Stream, [Line|Lines]) :-
-%     \+ at_end_of_stream(Stream),
-%     read_line_to_codes(Stream, LineCodes),
-%     atom_codes(Line, LineCodes),
-%     read_lines(Stream, Lines).

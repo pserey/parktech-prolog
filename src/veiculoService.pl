@@ -18,7 +18,6 @@ cadastra_veiculo(placa) :-
 verifica_veiculo(Placa) :-
     consult('src/veiculos.pl'),
     veiculo(_, Placa, _).
-    % file_to_facts('src/clientes.pl', Clientes),
 
 get_tipo_veiculo(Placa, Tipo) :-
     consult('src/veiculos.pl'),

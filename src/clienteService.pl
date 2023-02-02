@@ -16,4 +16,3 @@ cadastra_cliente(CpfCliente) :-
 verifica_cliente(CpfCliente) :-
     consult('src/clientes.pl'),
     cliente(CpfCliente, _).
-    % file_to_facts('src/clientes.pl', Clientes),
