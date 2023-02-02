@@ -24,7 +24,7 @@ estaciona_veiculo :-
 
 verificaVeiculo(CpfCliente) :- 
     write('Insira a placa do veículo: '), input_line(placa),
-    (veiculo(_,placa,_) ->  verficaDisponibilidadeVaga(CpfCliente, placa) ; cadastra_veiculo(placa), verficaDisponibilidadeVaga(CpfCliente, placa)).
+    (veiculo(_,placa,_) ->  verificaDisponibilidadeVaga(CpfCliente, placa) ; cadastra_veiculo(placa), verificaDisponibilidadeVaga(CpfCliente, placa)).
 
 
 verificaDisponibilidadeVaga(cpfCliente, placa) :-
@@ -39,7 +39,7 @@ verificaDisponibilidadeVaga(cpfCliente, placa) :-
     write('Insira a vaga que você deseja estacionar: '), input_line(vaga),
     
     veiculo(T, placa, _),
-    (vaga(0,vaga,andar,T,_,ID,_) -> estaciona(cpfCliente, placa, ID), (write('Você não pode estacionar nessa vaga'), find_vagas(T, cpfCliente, placa))).
+    (vaga(0,vaga,andar,T,_,ID,_) -> estaciona(cpfCliente, placa, ID) ; (write('Você não pode estacionar nessa vaga'), find_vagas(T, cpfCliente, placa))).
 
 
 find_vagas(Tipo, cpfCliente, placa) :-
