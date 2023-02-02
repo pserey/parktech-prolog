@@ -7,7 +7,7 @@
 :- use_module('util.pl', [input_line/1, posix_time/1]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
 :- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3]).
-:- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1]).
+:- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1, get_historico/2]).
 :- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1, get_tipo_veiculo/2]).
 
 % são dinamicos pois clausulas serão removidas, adicionadas e atualizadas
@@ -26,7 +26,6 @@ verificaVeiculo(CpfCliente) :-
     write('Insira a placa do veículo: '), input_line(PlacaString), nl,
     atom_string(Placa, PlacaString),
     (verifica_veiculo(Placa) ->  verificaDisponibilidadeVaga(CpfCliente, Placa) ; cadastra_veiculo(Placa), verificaDisponibilidadeVaga(CpfCliente, Placa)).
-    % (verifica_veiculo(Placa) ->  write('veiculo verificado'); write('veiculo nao verificado')).
 
 
 verificaDisponibilidadeVaga(CpfCliente, Placa) :-
@@ -45,7 +44,7 @@ verificaDisponibilidadeVaga(CpfCliente, Placa) :-
     get_vaga_id(Vaga, Andar, ID),
     get_vaga_tipo(ID, Tipo),
     get_tipo_veiculo(Placa, TipoVeiculo),
-    (Tipo \= TipoVeiculo -> write('Seu veículo não pode estacionar nessa vaga, porque ela não comporta veículos desse tipo'), nl, menu),
+    (Tipo \= TipoVeiculo -> write('Seu veículo não pode estacionar nessa vaga, porque ela não comporta veículos desse tipo'), nl, menu ; true),
 
     (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), menu ; write('Você não pode estacionar nessa vaga, ela está ocupada.'), nl, find_vagas(Tipo, CpfCliente, Placa)).
 
@@ -57,7 +56,6 @@ recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
 
 find_vagas(Tipo, CpfCliente, Placa) :-
     % acha vagas disponiveis para tipo de veículo
-    % findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis), 
     get_vagas_disponiveis_tipo(Tipo, Disponiveis),
 
     (Disponiveis = [] -> write('Não há vagas disponíveis para esse veículo.') ; 
@@ -97,7 +95,18 @@ estaciona(CpfCliente, Placa, IdVaga) :-
     
     % persiste atualização
     update_fact('src/vagas.pl', Vaga, NewVaga), 
+    registra_historico(CpfCliente, IdVaga),
     nl, write('Veículo estacionado com sucesso!'), nl, !.
+
+registra_historico(CPF, IDVaga) :-
+    % ver se cliente já tem histórico
+    % se tem, atualizar histórico e persistir
+    % se não, adicionar histórico
+    (get_historico(CPF, Historico) -> update_historico(CPF, IDVaga, Historico) ; add_fact('src/historico.pl', historico(CPF, [IDVaga]))).
+
+update_historico(CPF, IDVaga, Historico) :-
+    NewHistorico = [IDVaga | Historico],
+    update_fact('src/historico.pl', historico(CPF, Historico), historico(CPF, NewHistorico)).
 
 paga_estacionamento :- nl, write('paga_estacionamento').
 tempo_vaga :- nl, write('tempo_vaga').
