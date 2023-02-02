@@ -8,7 +8,7 @@
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
 :- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1]).
-:- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1]).
+:- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1, get_tipo_veiculo/2]).
 
 % são dinamicos pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic cliente/2.
@@ -44,8 +44,10 @@ verificaDisponibilidadeVaga(CpfCliente, Placa) :-
     % pega id de vaga
     get_vaga_id(Vaga, Andar, ID),
     get_vaga_tipo(ID, Tipo),
-    
-    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), menu ; write('Você não pode estacionar nessa vaga'), nl, find_vagas(Tipo, CpfCliente, Placa)).
+    get_tipo_veiculo(Placa, TipoVeiculo),
+    (Tipo \= TipoVeiculo -> write('Seu veículo não pode estacionar nessa vaga, porque ela não comporta veículos desse tipo'), nl, menu),
+
+    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), menu ; write('Você não pode estacionar nessa vaga, ela está ocupada.'), nl, find_vagas(Tipo, CpfCliente, Placa)).
 
 
 recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
