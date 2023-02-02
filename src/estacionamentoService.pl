@@ -6,7 +6,7 @@
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
-:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3]).
+:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1]).
 :- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1]).
 
@@ -43,8 +43,9 @@ verificaDisponibilidadeVaga(CpfCliente, Placa) :-
 
     % pega id de vaga
     get_vaga_id(Vaga, Andar, ID),
+    get_vaga_tipo(ID, Tipo),
     
-    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), write('Veiculo estacionado com sucesso!'), nl, menu ; write('Você não pode estacionar nessa vaga'), find_vagas(T, CpfCliente, Placa)).
+    (disponiibilidade_vaga(Vaga, Andar) -> estaciona(CpfCliente, Placa, ID), menu ; write('Você não pode estacionar nessa vaga'), nl, find_vagas(Tipo, CpfCliente, Placa)).
 
 
 recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
@@ -54,19 +55,20 @@ recomenda_vaga(CPF, Placa, VagaRec, AndarRec) :-
 
 find_vagas(Tipo, CpfCliente, Placa) :-
     % acha vagas disponiveis para tipo de veículo
-    findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis), 
+    % findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis), 
+    get_vagas_disponiveis_tipo(Tipo, Disponiveis),
 
     (Disponiveis = [] -> write('Não há vagas disponíveis para esse veículo.') ; 
 
-        nth0(0, Disponiveis, IdVaga), 
-        pega_primeiro_ultimo_caractere(IdVaga, Vaga, Andar),
-        write('A vaga escolhida não esta disponivel, mas voce pode estacionar o veiculo na vaga numero '),
+        nth0(0, Disponiveis, ID), 
+        get_vaga_numero_andar(ID, Vaga, Andar), nl,
+        write('A vaga escolhida não esta disponível, mas você pode estacionar o veículo na vaga '),
         write(Vaga),
-        write('no andar'),
-        write(Andar),
-        write('Deseja estacionar nessa vaga? (S/N)'), input_line(Resposta),
+        write(' do '),
+        write(Andar), write('o andar.'), nl,
+        write('Deseja estacionar nessa vaga? (s/n) '), input_line(RespostaString), atom_string(Resposta, RespostaString),
 
-        (resposta = 'S' -> estaciona(CpfCliente, Placa, IdVaga) ; menu)).
+        (Resposta = 's' -> estaciona(CpfCliente, Placa, IdVaga), menu; menu)).
 
 pega_primeiro_ultimo_caractere(String, Primeiro, Ultimo) :-
     atom_chars(String, Lista),
@@ -92,7 +94,8 @@ estaciona(CpfCliente, Placa, IdVaga) :-
     NewVaga =.. EstacionadaList,
     
     % persiste atualização
-    update_fact('src/vagas.pl', Vaga, NewVaga), !.
+    update_fact('src/vagas.pl', Vaga, NewVaga), 
+    nl, write('Veículo estacionado com sucesso!'), nl, !.
 
 paga_estacionamento :- nl, write('paga_estacionamento').
 tempo_vaga :- nl, write('tempo_vaga').
