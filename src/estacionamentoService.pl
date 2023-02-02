@@ -22,7 +22,7 @@ retorna_horas(TEMPO_VAGA, Horas) :-
 
 taxa_pagamento(IdVaga, IsDiaSemana, Taxa) :-
     consult('src/vagas.pl'),
-    vaga(_, Num, Andar, TipoVeiculo, TempoInicial, IdVaga,_),
+    vaga(_, _, _, TipoVeiculo, TempoInicial, IdVaga,_),
     posix_time(Current),
     horas(Current, TempoInicial, Diferenca),
     retorna_horas(Diferenca, Hora),
