@@ -83,6 +83,21 @@ generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
     atomic_list_concat([NumVaga, TipoVeiculo, Andar], '-', IdAtom),
     atom_string(IdAtom, Id).
 
+adiciona_tempo_vaga :-
+   write('--- FUNÇÃO PARA MODIFICAR O TEMPO DE UM VAGA PARA TESTES ---'),nl,
+   write('Insira os dados da modificação'),nl,
+   write('Número da vaga: '), input_line(VagaString),
+   atom_number(VagaString, Vaga),
+   write('Numero do andar: '), input_line(AndarString),
+   atom_number(AndarString, Andar),
+   write('Novo tempo: '), input_line(TempoString),
+   atom_number(TempoString, NovoTempo),
+   consult('src/vagas.pl'),
+   vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),
+   NewTempo is NovoTempo+Tempo,
+   update_fact('src/vagas.pl', vaga(Status,Vaga,Andar,TipoVeiculo,Tempo,IdVaga,Placa),vaga(Status,Vaga,Andar,TipoVeiculo,NewTempo,IdVaga,Placa)),
+   write('Tempo adicionado com sucesso'), nl,menu.
+
 % adiciona um andar ao estacionamento buscando o numero do ultimo andar criado. Ao cria-lo, cria mais 10 vagas, divididas entre carro, moto e van.
 adiciona_andar :-
     consult('src/vagas.pl'),
@@ -93,7 +108,7 @@ adiciona_andar :-
     adiciona_vaga_andar(NewAndar, 4, moto),
     adiciona_vaga_andar(NewAndar, 2, van),
     menu.
-    
+  
 % funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
 adiciona_vaga_andar(_, 0, _).
 adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
@@ -143,3 +158,17 @@ get_vaga_numero_andar(ID, Vaga, Andar) :-
 get_vagas_disponiveis_tipo(Tipo, Disponiveis) :-
     consult('src/vagas.pl'),
     findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis).
+
+% funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
+adiciona_vaga_andar(_, 0, _).
+adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
+    % calcular próximo número de vaga em andar que vaga será adicionada
+    prox_num_vaga(Andar, NumNovo),
+    % acessa posix time atual
+    posix_time(Now),
+    % gera id da vaga nova
+    generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
+    % adiciona fato no banco de dados
+    add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    NewCount is Count - 1,
+    adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
