@@ -1,5 +1,5 @@
 :- module(veiculoService, [
-    cadastra_veiculo/1
+    cadastraVeiculo/1
     ]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
 :- use_module('databaseManager.pl', [add_fact/2]).

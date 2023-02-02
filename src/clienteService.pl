@@ -7,7 +7,7 @@
 
 :- dynamic cliente/2.
 
-cadastra_cliente(CpfCliente) :- 
+cadastra_cliente(cpfCliente) :- 
     write('Insira o nome: '), input_line(nome),
     add_fact('src/cliente.pl', cliente(CpfCliente, nome)),
     menu.
