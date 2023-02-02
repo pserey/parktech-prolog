@@ -1,5 +1,5 @@
 :- module(databaseManager, [
-    add_fact/2, update_fact/3, find_vaga_by_id/2]).
+    add_fact/2, update_fact/3, read_file/2]).
 
 % add_fact(+Arquivo, +Fact)
 % adiciona fato passado como parametro a arquivo
@@ -60,28 +60,15 @@ write_file(Stream, [Fact|Facts]) :-
     write_file(Stream, Facts).
 
 % lê linhas de arquivo e retorna lista de strings
-read_file_lines(File, Lines) :-
-    open(File, read, Stream),
-    read_lines(Stream, Lines),
-    close(Stream).
+% read_file_lines(File, Lines) :-
+%     open(File, read, Stream),
+%     read_lines(Stream, Lines),
+%     close(Stream).
 
-read_lines(Stream, []) :-
-    at_end_of_stream(Stream).
-read_lines(Stream, [Line|Lines]) :-
-    \+ at_end_of_stream(Stream),
-    read_line_to_codes(Stream, LineCodes),
-    atom_codes(Line, LineCodes),
-    read_lines(Stream, Lines).
-
-find_vaga_by_id(ID, Vaga) :-
-    open('src/vagas.pl', read, Stream),
-    read_file(Stream, Vagas),
-    close(Stream),
-    find_vaga_by_id_list(Vagas, ID, Vaga), !.
-
-% encontra vaga com id e retorna o fato
-find_vaga_by_id_list(List, ID, Vaga) :-
-    member(Vaga, List),
-    Vaga =.. [_,_,_,_,_,_,ID1,_],
-    % write(Vaga),
-    ID1 = ID.
+% read_lines(Stream, []) :-
+%     at_end_of_stream(Stream).
+% read_lines(Stream, [Line|Lines]) :-
+%     \+ at_end_of_stream(Stream),
+%     read_line_to_codes(Stream, LineCodes),
+%     atom_codes(Line, LineCodes),
+%     read_lines(Stream, Lines).

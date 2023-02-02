@@ -5,7 +5,8 @@
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2, update_fact/3, find_vaga_by_id/2]).
+:- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
+:- use_module('vagaService.pl', [find_vaga_by_id/2]).
 :- use_module('clienteService.pl', [cadastra_cliente/1]).
 :- use_module('veiculoService.pl', [cadastra_veiculo/1]).
 

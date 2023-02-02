@@ -3,11 +3,12 @@
     vagas_disponiveis_andar/0,
     adiciona_vaga/0,
     adiciona_andar/0,
-    adiciona_tempo_vaga/0
+    adiciona_tempo_vaga/0,
+    find_vaga_by_id/2
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2]).
+:- use_module('databaseManager.pl', [add_fact/2, read_file/2]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
@@ -102,3 +103,17 @@ adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
     adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
     
 adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
+
+% find_vaga_by_id(+ID, -Vaga)
+% encontra vaga no database por id
+find_vaga_by_id(ID, Vaga) :-
+    open('src/vagas.pl', read, Stream),
+    read_file(Stream, Vagas),
+    close(Stream),
+    find_vaga_by_id_list(Vagas, ID, Vaga), !.
+
+% encontra vaga com id na lista e retorna o fato
+find_vaga_by_id_list(List, ID, Vaga) :-
+    member(Vaga, List),
+    Vaga =.. [_,_,_,_,_,_,ID1,_],
+    ID1 = ID.
