@@ -15,7 +15,7 @@
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2, read_file/2]).
+:- use_module('databaseManager.pl', [add_fact/2, read_file/2, update_fact/3]).
 :- discontiguous vagaService:adiciona_vaga_andar/3.
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
