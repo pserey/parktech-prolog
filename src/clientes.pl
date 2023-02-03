@@ -1,4 +1,3 @@
-cliente(11122233344,lorenna).
 cliente(12312312333,pedro).
 cliente(11111122222,vandressa).
 cliente(12312312312,wendell).
