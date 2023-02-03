@@ -6,7 +6,7 @@
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1, most_repeated_element/2]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
-:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3]).
+:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3, get_tempo_vaga/2]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1, get_historico/2]).
 :- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1, get_tipo_veiculo/2]).
 
@@ -86,13 +86,16 @@ replace(Old, New, [Head|Tail], [Head|NewTail]) :-
 estaciona(CpfCliente, Placa, IdVaga) :- 
     % acesssa vaga
     find_vaga_by_id(IdVaga, Vaga),
+    get_tempo_vaga(IdVaga, Tempo),
+    posix_time(Now),
 
     % atualiza vaga
     Vaga =.. List,
     List = [vaga, _, _, _, _, _, IdVaga, _],
     replace(none, Placa, List, PlacaList),
     replace(0, 1, PlacaList, EstacionadaList),
-    NewVaga =.. EstacionadaList,
+    replace(Tempo, Now, EstacionadaList, TempoList),
+    NewVaga =.. TempoList,
     
     % persiste atualização
     update_fact('src/vagas.pl', Vaga, NewVaga), 
@@ -168,4 +171,13 @@ string_concatenation(String, Int, Result) :-
     number_string(Int, IntString),
     atom_concat(String, IntString, Result).
 
-tempo_vaga :- nl, write('tempo_vaga').
+tempo_vaga :- 
+    write('Insira o número da vaga: '), input_line(VagaString), atom_number(VagaString, Vaga),
+    write('Insira o número do andar: '), input_line(AndarString), atom_number(AndarString, Andar),
+    get_vaga_id(Vaga, Andar, ID),
+    get_tempo_vaga(ID, TempoInicial),
+    posix_time(Now),
+    TempoEstacionado is Now - TempoInicial,
+    retorna_horas(TempoEstacionado, HorasOld),
+    Horas is round(HorasOld),
+    write(Horas), write(' horas.'), nl, menu.
