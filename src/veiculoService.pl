@@ -12,8 +12,7 @@
 cadastra_veiculo(Placa) :- 
     write('Insira o tipo de veículo: '), input_line(Tipo),
     write('Insira a cor do veículo: '), input_line(Cor),
-    add_fact('src/veiculos.pl', veiculo(Tipo, Placa, Cor)),
-    menu.
+    add_fact('src/veiculos.pl', veiculo(Tipo, Placa, Cor)).
 
 verifica_veiculo(Placa) :-
     consult('src/veiculos.pl'),

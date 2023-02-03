@@ -12,8 +12,7 @@
 
 cadastra_cliente(CpfCliente) :- 
     write('Insira o nome: '), input_line(Nome),
-    add_fact('src/clientes.pl', cliente(CpfCliente, Nome)),
-    menu.
+    add_fact('src/clientes.pl', cliente(CpfCliente, Nome)).
 
 verifica_cliente(CpfCliente) :-
     consult('src/clientes.pl'),
