@@ -157,8 +157,9 @@ paga_estacionamento :-
     atom_concat(Intermed, ' é maior que o valor pago', Menor),
     string_concatenation('Seu troco é: R$ ', Troco, Maior),
     posix_time(Curr),
+    round(Troco, RoundTroco),
     (Troco < 0 -> write(Menor),nl,menu;
-    Troco == 0 -> write('Estacionamento Pago com sucesso'),update_fact('src/vagas.pl',vaga(Status, Vaga, Andar,TipoVeiculo,_,IdVaga,_),vaga(0, Vaga, Andar,TipoVeiculo,Curr,IdVaga,'none')),nl,menu;
+    RoundTroco == 0 -> write('Estacionamento Pago com sucesso'),update_fact('src/vagas.pl',vaga(Status, Vaga, Andar,TipoVeiculo,_,IdVaga,_),vaga(0, Vaga, Andar,TipoVeiculo,Curr,IdVaga,'none')),nl,menu;
     Troco > 0 ->  write(Maior),update_fact('src/vagas.pl',vaga(Status, Vaga, Andar,TipoVeiculo,_,IdVaga,_),vaga(0, Vaga, Andar,TipoVeiculo,Curr,IdVaga,'none')),nl, menu).
 
 string_concatenation(String, Int, Result) :-
