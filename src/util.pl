@@ -22,4 +22,4 @@ remove_last([X|Xs], [X|WithoutLast]) :-
 most_repeated_element(List, MostRepeated) :-
     setof(Count-Element, (member(Element,List), aggregate(count, member(Element,List), Count)), Counts),
     sort(Counts, SortedCounts),
-    reverse(SortedCounts, [MostRepeatedCount-MostRepeated|_]).
+    reverse(SortedCounts, [_MostRepeatedCount-MostRepeated|_]).
