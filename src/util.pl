@@ -1,4 +1,4 @@
-:- module(util, [input_line/1, posix_time/1, remove_last/2, most_repeated_element/2]).
+:- module(util, [input_line/1, posix_time/1, remove_last/2, most_repeated_element/2, replace/4]).
 :- use_module(library(aggregate)).
 
 % input_line(-Line)
@@ -23,3 +23,10 @@ most_repeated_element(List, MostRepeated) :-
     setof(Count-Element, (member(Element,List), aggregate(count, member(Element,List), Count)), Counts),
     sort(Counts, SortedCounts),
     reverse(SortedCounts, [_MostRepeatedCount-MostRepeated|_]).
+
+replace(_, _, [], []).
+replace(Old, New, [Old|Tail], [New|NewTail]) :-
+    replace(Old, New, Tail, NewTail).
+replace(Old, New, [Head|Tail], [Head|NewTail]) :-
+    Old \= Head,
+    replace(Old, New, Tail, NewTail).

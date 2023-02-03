@@ -4,7 +4,7 @@
     tempo_vaga/0
     ]).
 :- use_module('menu.pl', [menu/0]).
-:- use_module('util.pl', [input_line/1, posix_time/1, most_repeated_element/2]).
+:- use_module('util.pl', [input_line/1, posix_time/1, most_repeated_element/2, replace/4]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
 :- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vaga_status/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3, get_tempo_vaga/2, get_vaga_tipo/2]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1, get_historico/2]).
@@ -76,12 +76,6 @@ pega_primeiro_ultimo_caractere(String, Primeiro, Ultimo) :-
     [Primeiro | _] = Lista,
     reverse(Lista, [Ultimo | _]).
 
-replace(_, _, [], []).
-replace(Old, New, [Old|Tail], [New|NewTail]) :-
-    replace(Old, New, Tail, NewTail).
-replace(Old, New, [Head|Tail], [Head|NewTail]) :-
-    Old \= Head,
-    replace(Old, New, Tail, NewTail).
 
 estaciona(CpfCliente, Placa, IdVaga) :- 
     % acesssa vaga
@@ -128,18 +122,18 @@ taxa_pagamento(IdVaga, IsDiaSemana, Taxa) :-
     horas(Current, TempoInicial, Diferenca),
     retorna_horas(Diferenca, Hora),
     round(Hora, Horas),
-    (TipoVeiculo == 'carro', Horas > 2, IsDiaSemana == 1 -> Taxa is 6 + ((Horas-2)*1.5) ;
-    TipoVeiculo == 'carro', Horas > 2, IsDiaSemana == 0 -> Taxa is 8 + ((Horas-2)*2) ;
-    TipoVeiculo == 'carro', Horas =< 2, IsDiaSemana == 1 -> Taxa is 6;
-    TipoVeiculo == 'carro', Horas =< 2, IsDiaSemana == 0 -> Taxa is 8;
-    TipoVeiculo == 'moto', Horas > 2, IsDiaSemana == 1 -> Taxa is 4 + ((Horas-2)*1) ;
-    TipoVeiculo == 'moto', Horas > 2, IsDiaSemana == 0 -> Taxa is 6 + ((Horas-2)*1.5) ;
-    TipoVeiculo == 'moto', Horas =< 2, IsDiaSemana == 1 -> Taxa is 4;
-    TipoVeiculo == 'moto', Horas =< 2, IsDiaSemana == 0 -> Taxa is 6;
-    TipoVeiculo == 'van', Horas > 2, IsDiaSemana == 1 -> Taxa is 8 + ((Horas-2)*2) ;
-    TipoVeiculo == 'van', Horas > 2, IsDiaSemana == 0 -> Taxa is 10 + ((Horas-2)*2.5) ;
-    TipoVeiculo == 'van', Horas =< 2, IsDiaSemana == 1 -> Taxa is 8;
-    TipoVeiculo == 'van', Horas =< 2, IsDiaSemana == 0 -> Taxa is 10;
+    (TipoVeiculo == carro, Horas > 2, IsDiaSemana == 1 -> Taxa is 6 + ((Horas-2)*1.5) ;
+    TipoVeiculo == carro, Horas > 2, IsDiaSemana == 0 -> Taxa is 8 + ((Horas-2)*2) ;
+    TipoVeiculo == carro, Horas =< 2, IsDiaSemana == 1 -> Taxa is 6;
+    TipoVeiculo == carro, Horas =< 2, IsDiaSemana == 0 -> Taxa is 8;
+    TipoVeiculo == moto, Horas > 2, IsDiaSemana == 1 -> Taxa is 4 + ((Horas-2)*1) ;
+    TipoVeiculo == moto, Horas > 2, IsDiaSemana == 0 -> Taxa is 6 + ((Horas-2)*1.5) ;
+    TipoVeiculo == moto, Horas =< 2, IsDiaSemana == 1 -> Taxa is 4;
+    TipoVeiculo == moto, Horas =< 2, IsDiaSemana == 0 -> Taxa is 6;
+    TipoVeiculo == van, Horas > 2, IsDiaSemana == 1 -> Taxa is 8 + ((Horas-2)*2) ;
+    TipoVeiculo == van, Horas > 2, IsDiaSemana == 0 -> Taxa is 10 + ((Horas-2)*2.5) ;
+    TipoVeiculo == van, Horas =< 2, IsDiaSemana == 1 -> Taxa is 8;
+    TipoVeiculo == van, Horas =< 2, IsDiaSemana == 0 -> Taxa is 10;
     true).
 
 paga_estacionamento :-
