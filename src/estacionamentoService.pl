@@ -6,7 +6,7 @@
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1, most_repeated_element/2]).
 :- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
-:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3, get_tempo_vaga/2]).
+:- use_module('vagaService.pl', [find_vaga_by_id/2, disponiibilidade_vaga/2, get_vaga_id/3, get_vaga_tipo/2, get_vaga_status/2, get_vagas_disponiveis_tipo/2, get_vaga_numero_andar/3, get_tempo_vaga/2, get_vaga_tipo/2]).
 :- use_module('clienteService.pl', [cadastra_cliente/1, verifica_cliente/1, get_historico/2]).
 :- use_module('veiculoService.pl', [cadastra_veiculo/1, verifica_veiculo/1, get_tipo_veiculo/2]).
 
@@ -69,7 +69,7 @@ find_vagas(Tipo, CpfCliente, Placa) :-
         write(Andar), write('o andar.'), nl,
         write('Deseja estacionar nessa vaga? (s/n) '), input_line(RespostaString), atom_string(Resposta, RespostaString),
 
-        (Resposta = 's' -> estaciona(CpfCliente, Placa, IdVaga), menu; menu)).
+        (Resposta = 's' -> estaciona(CpfCliente, Placa, _IdVaga), menu; menu)).
 
 pega_primeiro_ultimo_caractere(String, Primeiro, Ultimo) :-
     atom_chars(String, Lista),
@@ -122,8 +122,8 @@ retorna_horas(TEMPO_VAGA, Horas) :-
     Horas is RETORNO / 3600.
 
 taxa_pagamento(IdVaga, IsDiaSemana, Taxa) :-
-    consult('src/vagas.pl'),
-    vaga(_, _, _, TipoVeiculo, TempoInicial, IdVaga,_),
+    get_tempo_vaga(IdVaga, TempoInicial),
+    get_vaga_tipo(IdVaga, TipoVeiculo),
     posix_time(Current),
     horas(Current, TempoInicial, Diferenca),
     retorna_horas(Diferenca, Hora),
@@ -148,8 +148,8 @@ paga_estacionamento :-
     write('Informe o numero da vaga: '), input_line(VagaString),
     atom_number(AndarString, Andar),
     atom_number(VagaString, Vaga),
-    consult('src/vagas.pl'),
-    vaga(Status, Vaga, Andar,TipoVeiculo,_,IdVaga,_),
+    get_vaga_id(Vaga,Andar,IdVaga),
+    get_vaga_status(IdVaga,Status),
     (Status == 0 -> write('A vaga nao está ocupada, falha ao realizar o pagamento'),nl,menu;true),
     write('é Dia comercial? [Não: 0/ Sim: 1] '), input_line(WeekString),
     atom_number(WeekString, Week),
