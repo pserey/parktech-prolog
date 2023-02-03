@@ -1,7 +1,7 @@
-vaga(1,3,3,carro,1675443535,3-carro-3,bcabca).
+vaga(1,3,3,carro,1675443797,3-carro-3,bcabca).
 vaga(0,3,1,moto,1674331310,3-moto-1,none).
 vaga(0,3,6,van,1674331354,3-van-6,none).
-vaga(0,7,3,carro,1674334264,7-carro-3,none).
+vaga(1,7,3,carro,1675443873,7-carro-3,abcabc).
 vaga(0,8,3,van,1674334285,8-van-3,none).
 vaga(0,19,3,carro,1674415616,19-carro-3,none).
 vaga(0,4,1,moto,1674416386,4-moto-1,none).
