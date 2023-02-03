@@ -11,8 +11,8 @@
 :- dynamic historico/2.
 
 cadastra_cliente(CpfCliente) :- 
-    write('Insira o nome: '), input_line(nome),
-    add_fact('src/cliente.pl', cliente(CpfCliente, nome)),
+    write('Insira o nome: '), input_line(Nome),
+    add_fact('src/clientes.pl', cliente(CpfCliente, Nome)),
     menu.
 
 verifica_cliente(CpfCliente) :-
