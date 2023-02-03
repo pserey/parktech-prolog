@@ -69,7 +69,7 @@ find_vagas(Tipo, CpfCliente, Placa) :-
         write(Andar), write('o andar.'), nl,
         write('Deseja estacionar nessa vaga? (s/n) '), input_line(RespostaString), atom_string(Resposta, RespostaString),
 
-        (Resposta = 's' -> estaciona(CpfCliente, Placa, _IdVaga), menu; menu)).
+        (Resposta = 's' -> estaciona(CpfCliente, Placa, ID), menu; menu)).
 
 pega_primeiro_ultimo_caractere(String, Primeiro, Ultimo) :-
     atom_chars(String, Lista),
