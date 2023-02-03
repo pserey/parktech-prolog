@@ -9,7 +9,8 @@
     get_vaga_id/3,
     get_vaga_tipo/2,
     get_vagas_disponiveis_tipo/2,
-    get_vaga_numero_andar/3
+    get_vaga_numero_andar/3,
+    get_tempo_vaga/2
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
@@ -122,8 +123,8 @@ adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
     add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
     NewCount is Count - 1,
     adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
-    
-adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
+
+
 
 % find_vaga_by_id(+ID, -Vaga)
 % encontra vaga no database por id
@@ -158,6 +159,10 @@ get_vaga_numero_andar(ID, Vaga, Andar) :-
 get_vagas_disponiveis_tipo(Tipo, Disponiveis) :-
     consult('src/vagas.pl'),
     findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis).
+
+get_tempo_vaga(ID, Tempo) :- 
+    consult('src/vagas.pl'),
+    vaga(_,_,_,_,Tempo,ID,_), !.
 
 % funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
 adiciona_vaga_andar(_, 0, _).
