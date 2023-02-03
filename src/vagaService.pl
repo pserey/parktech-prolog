@@ -10,11 +10,13 @@
     get_vaga_tipo/2,
     get_vagas_disponiveis_tipo/2,
     get_vaga_numero_andar/3,
-    get_tempo_vaga/2
+    get_tempo_vaga/2,
+    get_vaga_status/2
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
 :- use_module('databaseManager.pl', [add_fact/2, read_file/2]).
+:- discontiguous vagaService:adiciona_vaga_andar/3.
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
@@ -151,6 +153,10 @@ get_vaga_id(Vaga, Andar, ID) :-
 get_vaga_tipo(ID, Tipo) :-
     consult('src/vagas.pl'),
     vaga(_, _, _, Tipo, _, ID, _), !.
+
+get_vaga_status(ID,Status):-
+    consult('src/vagas.pl'),
+    vaga(Status, _, _, _, _, ID, _), !.
 
 get_vaga_numero_andar(ID, Vaga, Andar) :-
     consult('src/vagas.pl'),
