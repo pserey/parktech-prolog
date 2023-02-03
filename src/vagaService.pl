@@ -3,11 +3,17 @@
     vagas_disponiveis_andar/0,
     adiciona_vaga/0,
     adiciona_andar/0,
-    adiciona_tempo_vaga/0
+    adiciona_tempo_vaga/0,
+    find_vaga_by_id/2,
+    disponiibilidade_vaga/2,
+    get_vaga_id/3,
+    get_vaga_tipo/2,
+    get_vagas_disponiveis_tipo/2,
+    get_vaga_numero_andar/3
     ]).
 :- use_module('menu.pl', [menu/0]).
 :- use_module('util.pl', [input_line/1, posix_time/1]).
-:- use_module('databaseManager.pl', [add_fact/2, update_fact/3]).
+:- use_module('databaseManager.pl', [add_fact/2, read_file/2]).
 
 % vaga é dinamico pois clausulas serão removidas, adicionadas e atualizadas
 :- dynamic vaga/7.
@@ -51,7 +57,7 @@ adiciona_vaga :-
     atom_number(AndarString, Andar),
     prox_num_vaga(Andar, NumNovo),
 
-    % checa se número de vagas no andar não é maior que 20k
+    % checa se número de vagas no andar não é maior que 20
     (NumNovo > 20 -> write('Número máximo de vagas no andar atingido!'), nl, menu ; true),
 
     % acessa posix time atual
@@ -61,7 +67,7 @@ adiciona_vaga :-
     generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
 
     % adiciona fato no banco de dados
-    add_fact('src/vagas.pl', vaga(0, NumNovo, Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    add_fact('src/vagas.pl', vaga(0, NumNovo, Andar, TipoVeiculo, Now, IdVaga, "none")),
     write('Vaga adicionada com sucesso!'), nl, menu.
 
 % prox_num_vaga(+Andar, -NumNovo)
@@ -74,8 +80,8 @@ prox_num_vaga(Andar, NumNovo) :-
 % generate_id_vaga(+NumVaga, +Andar, +TipoVeiculo, -Id)
 % retorna id gerado a partir da concatenação 'NumVaga-TipoVeiculo-Andar'
 generate_id_vaga(NumVaga, Andar, TipoVeiculo, Id) :-
-    atomic_list_concat([NumVaga, Andar, TipoVeiculo], '-', Id).
-
+    atomic_list_concat([NumVaga, TipoVeiculo, Andar], '-', IdAtom),
+    atom_string(IdAtom, Id).
 
 adiciona_tempo_vaga :-
    write('--- FUNÇÃO PARA MODIFICAR O TEMPO DE UM VAGA PARA TESTES ---'),nl,
@@ -102,7 +108,7 @@ adiciona_andar :-
     adiciona_vaga_andar(NewAndar, 4, moto),
     adiciona_vaga_andar(NewAndar, 2, van),
     menu.
-    
+  
 % funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
 adiciona_vaga_andar(_, 0, _).
 adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
@@ -116,4 +122,53 @@ adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
     add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
     NewCount is Count - 1,
     adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
+    
+adiciona_tempo_vaga :- write('adiciona_tempo_vaga').
 
+% find_vaga_by_id(+ID, -Vaga)
+% encontra vaga no database por id
+find_vaga_by_id(ID, Vaga) :-
+    open('src/vagas.pl', read, Stream),
+    read_file(Stream, Vagas),
+    close(Stream),
+    find_vaga_by_id_list(Vagas, ID, Vaga), !.
+
+% encontra vaga com id na lista e retorna o fato
+find_vaga_by_id_list(List, ID, Vaga) :-
+    member(Vaga, List),
+    Vaga =.. [_,_,_,_,_,_,ID1,_],
+    ID1 = ID.
+
+disponiibilidade_vaga(Vaga, Andar) :-
+    consult('src/vagas.pl'),
+    vaga(0, Vaga, Andar, _, _, _, _), !.
+
+get_vaga_id(Vaga, Andar, ID) :-
+    consult('src/vagas.pl'),
+    vaga(_, Vaga, Andar, _, _, ID, _), !.
+
+get_vaga_tipo(ID, Tipo) :-
+    consult('src/vagas.pl'),
+    vaga(_, _, _, Tipo, _, ID, _), !.
+
+get_vaga_numero_andar(ID, Vaga, Andar) :-
+    consult('src/vagas.pl'),
+    vaga(_, Vaga, Andar, _, _, ID, _), !.
+
+get_vagas_disponiveis_tipo(Tipo, Disponiveis) :-
+    consult('src/vagas.pl'),
+    findall(ID, vaga(0, _, _, Tipo, _, ID, _), Disponiveis).
+
+% funcao para adicionar as vagas de maneira correta ao se criar um novo andar.
+adiciona_vaga_andar(_, 0, _).
+adiciona_vaga_andar(Andar, Count, TipoVeiculo) :-
+    % calcular próximo número de vaga em andar que vaga será adicionada
+    prox_num_vaga(Andar, NumNovo),
+    % acessa posix time atual
+    posix_time(Now),
+    % gera id da vaga nova
+    generate_id_vaga(NumNovo, Andar, TipoVeiculo, IdVaga),
+    % adiciona fato no banco de dados
+    add_fact('src/vagas.pl', vaga(0, NumNovo,Andar, TipoVeiculo, Now, IdVaga, 'none')),
+    NewCount is Count - 1,
+    adiciona_vaga_andar(Andar, NewCount, TipoVeiculo).
