@@ -9,10 +9,10 @@
 
 :- dynamic veiculo/3.
 
-cadastra_veiculo(placa) :- 
-    write('Insira o tipo de veículo: '), input_line(tipo),
-    write('Insira a cor do veículo: '), input_line(cor),
-    add_fact('src/veiculo.pl', veiculo(tipo, placa, cor)),
+cadastra_veiculo(Placa) :- 
+    write('Insira o tipo de veículo: '), input_line(Tipo),
+    write('Insira a cor do veículo: '), input_line(Cor),
+    add_fact('src/veiculos.pl', veiculo(Tipo, Placa, Cor)),
     menu.
 
 verifica_veiculo(Placa) :-
